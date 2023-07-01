@@ -1,10 +1,11 @@
 import { Router } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { authenticate, ConfigModule } from "@medusajs/medusa";
+import {authenticate, authenticateCustomer, ConfigModule} from "@medusajs/medusa";
 import { getConfigFile } from "medusa-core-utils";
 import { attachStoreRoutes } from "./routes/store";
 import { attachAdminRoutes } from "./routes/admin";
+import { registerLoggedInCustomer } from "./middlewares/logged-in-customer";
 
 export default (rootDirectory: string): Router | Router[] => {
   // Read currently-loaded medusa config
@@ -34,6 +35,13 @@ export default (rootDirectory: string): Router | Router[] => {
 
   // Add authentication to all admin routes *except* auth and account invite ones
   router.use(/\/admin\/((?!auth)(?!invites).*)/, authenticate());
+
+  // Add authentication to all store routes except auth
+  router.use(
+      /\/store\/[^(auth)].*/,
+      authenticateCustomer(),
+      registerLoggedInCustomer
+  )
 
   // Set up routers for store and admin endpoints
   const storeRouter = Router();

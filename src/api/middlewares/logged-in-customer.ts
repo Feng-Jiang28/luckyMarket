@@ -1,13 +1,13 @@
 import { CustomerService } from "@medusajs/medusa"
 import { Customer } from "../../models/customer"
 
-export async function registerLoggedInUser(req, res, next) {
+export async function registerLoggedInCustomer(req, res, next) {
      let loggedInCustomer: Customer | null = null
-
-     if (req.customer && req.customer.id) {
+     console.log(req.user);
+     if (req.user && req.user.customer_id) {
           const customerService =
               req.scope.resolve("customerService") as CustomerService
-          loggedInCustomer = await customerService.retrieve(req.customer.id)
+          loggedInCustomer = await customerService.retrieve(req.user.customer_id)
      }
 
      req.scope.register({
