@@ -29,7 +29,7 @@ const ADMIN_CORS =
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
 
 const DATABASE_URL =
-  process.env.DATABASE_URL || "postgres://localhost/medusa-store";
+  process.env.DATABASE_URL || "postgres://postgres:medusa@localhost:5432/medusa_store";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
@@ -53,7 +53,7 @@ const plugins = [
 ];
 
 const modules = {
-  /*eventBus: {
+  eventBus: {
     resolve: "@medusajs/event-bus-redis",
     options: {
       redisUrl: REDIS_URL
@@ -64,18 +64,24 @@ const modules = {
     options: {
       redisUrl: REDIS_URL
     }
-  },*/
+  },
+  mongoDataSource: {
+    resolve: "medusa-mongo-datasource",
+    options: {
+      url: DATABASE_URL
+    }
+  }
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
 const projectConfig = {
-  jwtSecret: process.env.JWT_SECRET,
-  cookieSecret: process.env.COOKIE_SECRET,
+  jwtSecret: 'jwtsecret',
+  cookieSecret: 'cookiesecret',
   store_cors: STORE_CORS,
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   // Uncomment the following lines to enable REDIS
-  // redis_url: REDIS_URL
+  redis_url: REDIS_URL
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
